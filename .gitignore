@@ -1,0 +1,10 @@
+# Environments
+.env
+.venv/
+
+# Instance Folder
+instance/
+
+# Database
+*.db
+

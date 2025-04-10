@@ -1,0 +1,13 @@
+flask
+flask-socketio
+python-socketio
+flask-login
+flask-sqlalchemy
+jinja2
+werkzeug
+python-dotenv
+pytz
+
+
+
+'.\.venv\Scripts\pip install -r requirements.txt'
