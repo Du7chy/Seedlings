@@ -17,7 +17,7 @@ class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY')
 
     @staticmethod
-    def create_app():
+    def init_app():
         """Create instance directory if it doesn't exist"""
         if not os.path.exists(Config.INSTANCE_DIR):
             os.makedirs(Config.INSTANCE_DIR)

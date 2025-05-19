@@ -3,11 +3,10 @@ flask-socketio
 python-socketio
 flask-login
 flask-sqlalchemy
+flask-migrate
 jinja2
 werkzeug
 python-dotenv
 pytz
 
-
-
-'.\.venv\Scripts\pip install -r requirements.txt'
+# .\.venv\Scripts\pip install -r requirements.txt
