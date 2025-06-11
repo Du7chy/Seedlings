@@ -1,8 +1,18 @@
+import argparse
+from pathlib import Path
+import sys
+
+# Get the project root directory
+ROOT = Path(__file__).resolve().parent.parent
+
+# Add to Python path
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
 from app import create_app
 from models.database import db
 from models.plant import Plant
 from models.seed import Seed
-import argparse
 
 RARITIES = ['common', 'uncommon', 'rare', 'epic', 'legendary',]
 

@@ -10,8 +10,8 @@ class GrowingPlant(db.Model):
     seed_id = db.Column(db.Integer, db.ForeignKey('seed.id', ondelete='CASCADE'), nullable=False)
     planted_at = db.Column(db.DateTime, default=datetime.now(pytz.timezone('Australia/Sydney')))
     growth_time = db.Column(db.Integer, nullable=False)
-    is_ready = db.Column(db.Boolean, deafault=False)
-    harvested = db.Column(db.Boolean, defaul=False)
+    is_ready = db.Column(db.Boolean, default=False)
+    harvested = db.Column(db.Boolean, default=False)
 
     # Relationships
 

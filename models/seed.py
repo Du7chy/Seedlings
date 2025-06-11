@@ -13,7 +13,8 @@ class Seed(db.Model):
 
     # Plants through loot table
     loot_table = db.relationship('LootTable', back_populates='seed', cascade='all, delete-orphan')
-
+    # Growing plants
+    growing_plants = db.relationship('GrowingPlant', back_populates='seed')
 
     def __init__(self, name, description, cost,  min_time, max_time):
         self.name = name

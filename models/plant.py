@@ -1,4 +1,6 @@
 from models.database import db
+from models.loot_table import LootTable
+from models.user_plant_record import UserPlantRecord
 
 class Plant(db.Model):
     id = db.Column(db.Integer, primary_key=True) # Unique identifier for each plant
@@ -10,7 +12,7 @@ class Plant(db.Model):
     # Relationships
 
     # Seeds through loot table
-    seeds = db.relationship('SeedPacketLootTable', back_populates='plant', cascade='all, delete-orphan')
+    seeds = db.relationship('LootTable', back_populates='plant', cascade='all, delete-orphan')
     # User plant record
     user_records = db.relationship('UserPlantRecord', back_populates='plant', cascade='all, delete-orphan')
 
