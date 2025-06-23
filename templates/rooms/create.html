@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Seedlings | Create Room{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <div class="form-card">
+        <h2>Create a Garden Room</h2>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{message}}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST" class="create-room-form">
+            <div class="form-group">
+                <label for="name">Room Name</label>
+                <input type="text" id="name" name="name" required maxlength="50">
+            </div>
+
+            <div class="form-group">
+                <label for="max_members">Maximum Members</label>
+                <input type="number" id="max_members" name="max_members" value="10" min="2" max="10">
+            </div>
+
+            <div class="form-group checkbox">
+                <input type="checkbox" id="is_private" name="is_private" value="true">
+                <label for="is_private">Make this room private</label>
+            </div>
+
+            <div>
+                <p>A unique join code will be generated when you create the room.</p>
+            </div>
+
+            <div class="form-actions">
+                <a href="{{ url_for('rooms.room_list') }}" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">Create Room</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

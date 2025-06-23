@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Seedlings | Rooms{% endblock %}
+
+{% block content %}
+<div class="room-list-container">
+    <div class="room-list-header">
+        <h1>Rooms</h1>
+        <div class="room-actions">
+            <button id="join-btn" class="btn btn-secondary">
+                <span class="btn-icon">🔑</span> Join with Code
+            </button>
+            <a href="{{ url_for('rooms.create_room') }}" class="btn btn-primary">
+                <span class="btn-icon">➕</span> Create New Room
+            </a>
+        </div>
+    </div>
+
+    <div class="room-filters">
+        <div class="search-bar">
+            <input type="text" id="room-search" placeholder="Search rooms...">
+            <button id="search-btn" class="btn btn-icon">🔍</button>
+        </div>
+
+        <!-- Join Room Popup -->
+        <div id="join-popup" class="popup" style="display: none;">
+            <div class="popup-content">
+                <h2>Join Private Room</h2>
+                <p>Enter the room code to join</p>
+                <input type="text" id="join-code" placeholder="Enter code" maxlength="4">
+                <div class="popup-actions">
+                    <button id="popup-cancel" class="btn btn-secondary">Cancel</button>
+                    <button id="popup-join" class="btn btn-primary">Join</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="room-list" class="room-grid">
+        <!-- Rooms will be dynammically added here -->
+    </div>
+
+    <div id="loading" class="loading-spinner" style="display: none;">
+        <div class="spinner"></div>
+        <span>Loading rooms...</span>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='scripts/list-rooms.js') }}"></script>
+{% endblock %}

@@ -30,12 +30,21 @@ class DevelopmentConfig(Config):
     DB_NAME = 'seedlings.db'
     SQLALCHEMY_DATABASE_URI = f'sqlite:///{os.path.join(Config.INSTANCE_DIR, DB_NAME)}'
 
+    CORS_ORIGINS = [
+        'http://loacalhost:5000',
+        'http://127.0.0.1:5000'
+    ]
+
 class ProductionConfig(Config):
     """Production configuration settings"""
 
     DEBUG = False
     # Will be replaced later for PythonAnywhere database configuration
     SQLALCHEMY_DATABASE_URI = 'PLACEHOLDER'
+
+    CORS_ORIGINS = [
+        'PLACEHOLDER'
+    ]
 
 # Dictionary of configurations
 config = {

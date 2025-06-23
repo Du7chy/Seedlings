@@ -1,0 +1,146 @@
+{% extends base.html %}
+
+{% block title %}Seedlings | {{ room.name }}{% endblock %}
+
+{% block content %}
+<div class="game-container">
+    <div class="room-header">
+        <div class="room-info">
+            <h1>{{ room.name }}</h1>
+            {% if room.is_private %}
+                <span class="room-private">🔒 Private Room</span>
+            {% endif %}
+        </div>
+
+        <div class="room-actions">
+            <button id="leave-room" class="btn btn-secondary">
+                {% if current_user == room.owner %}
+                    Close Room
+                {% else %}
+                    Leave Room
+                {% endif %}
+            </button>
+            <div class="join-code-display">
+                <span>Join Code: </span>
+                <code>{{ room.join_code }}</code>
+                <button id="copy-code" class="btn btn-icon" title="Copy join code">📋</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="room-content">
+        <div class="game-content">
+            <!-- User's Inventory Section -->
+            <div class="inventory-container">
+                <h2>Your Inventory</h2>
+                <div class="inventory-tabs">
+                    <button class="tab-btn active" data-tab="seeds">Seeds</button>
+                    <button class="tab-btn" data-tab="plants">Plants</button>
+                </div>
+                <!-- User Seeds Tab -->
+                <div id="inventory-seeds" class="inventory-content active">
+                    <div id="seed-inventory" class="seed-list">
+                        <!-- User's seeds will be dynamically added here -->
+                    </div>
+                    <button id="plant-seed" class="btn btn-primary">
+                        <span class="btn-icon">🌱</span> Plant Selected Seed
+                    </button>
+                </div>
+                <!-- User Plants Tab -->
+                <div id="inventory-plants" class="inventory-content">
+                    <div id="plant-inventory" class="plant-list">
+                        <!-- User's harvested plants will be dynamically added here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- User's Growing Plants Section -->
+            <div class="growing-container">
+                <h2>Your Growing Plants</h2>
+                <div id="growing-plants" class="growing-plants">
+                    <!-- User's growing plants will be dynamically added here -->
+                </div>
+            </div>
+
+            <!-- Shop Button -->
+            <button id="open-shop" class="btn btn-primary">
+                <span class="btn-icon">💲</span> Open Shop
+            </button>
+
+            <!-- Shop Popup -->
+            <div id="shop-popup" class="popup">
+                <div class="popup-content">
+                    <div class="popup-header">
+                        <h2>Shop</h2>
+                        <button class="close-popup">❌</button>
+                    </div>
+                    <div class="shop-tabs">
+                        <button class="tab-btn active" data-tab="buy">Buy Seeds</button>
+                        <button class="tab-btn" data-tab="sell">Sell Plants</button>
+                    </div>
+                    <!-- Buy Seeds Tab -->
+                    <div id="buy-tab" class="shop-content active">
+                        <div class="seed-cataglog">
+                            <!-- Available seeds will be dynamically added here -->
+                        </div>
+                        <div class="buy-controls">
+                            <div class="quantity-control">
+                                <label for="seed-quantity">Quantity:</label>
+                                <input type="number" id="seed-quantity" min="1" value="1">
+                            </div>
+                            <div class="total-cost">Total: $0</div>
+                            <button id="buy-seeds" class="btn btn-primary" disabled>
+                                Buy Seeds
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Sell Plants Tab -->
+                    <div id="sell-tab" class="shop-content">
+                        <div class="plant-catalog">
+                            <!-- User's harvested plants will be dynamically added here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="room-sidebar">
+            <!-- Member List Section -->
+            <div class="members">
+                <h3>Members (<span id="member-count">{{ member_count }}</span>/<span>{{ room.max_members }}</span>)</h3>
+                <div id="member-list" class="member-list">
+                    {% for member in members %}
+                    <div class="member" data-user-id="{{ member.id }}">
+                        <span class="member-name">
+                            {{ member.username }}
+                            {% if member == room.owner %}
+                                <span class="owner-icon" title="Room Owner">👑</span>
+                            {% endif %}
+                        </span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Chat Section -->
+            <div class="chat-container">
+                <h3>Room Chat</h3>
+                <div id="chat-messages" class="chat-messages">
+                    <!-- Messages will be dynamically added here-->
+                </div>
+                <div class="chat-input">
+                    <input type="text" id="chat-message" placeholder="Type a message...">
+                    <button id="send-message" class="btn btn-primary">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='scripts/room.js') }}"></script>
+<script src="{{ url_for('static', filename='scripts/game.js') }}"></script>
+<script src="{{ url_for('static', filename='scripts/shop.js') }}"></script>
+<script src="{{ url_for('static', filename='scripts/sidebar.js') }}"></script>
+{% endblock %}

@@ -15,6 +15,9 @@ class Seed(db.Model):
     loot_table = db.relationship('LootTable', back_populates='seed', cascade='all, delete-orphan')
     # Growing plants
     growing_plants = db.relationship('GrowingPlant', back_populates='seed')
+    # User through seed inventory
+    users = db.relationship('User', secondary='user_seed_inv', back_populates='seeds')
+    inventories = db.relationship('SeedInv', back_populates='seed', cascade='all, delete-orphan')
 
     def __init__(self, name, description, cost,  min_time, max_time):
         self.name = name

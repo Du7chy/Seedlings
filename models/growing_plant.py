@@ -11,7 +11,6 @@ class GrowingPlant(db.Model):
     planted_at = db.Column(db.DateTime, default=datetime.now(pytz.timezone('Australia/Sydney')))
     growth_time = db.Column(db.Integer, nullable=False)
     is_ready = db.Column(db.Boolean, default=False)
-    harvested = db.Column(db.Boolean, default=False)
 
     # Relationships
 
@@ -33,7 +32,7 @@ class GrowingPlant(db.Model):
 
     def is_harvestable(self):
         """Check if the plant is ready to harvest"""
-        if self.is_ready or self.harvested:
+        if self.is_ready:
             return self.is_ready
         
         now = datetime.now(pytz.timezone('Australia/Sydney'))
@@ -47,7 +46,7 @@ class GrowingPlant(db.Model):
     
     def time_remaining(self):
         """Get the time remaining until fully grown in seconds"""
-        if self.is_ready or self.harvested:
+        if self.is_ready:
             return 0
         
         now = datetime.now(pytz.timezone('Australia/Sydney'))
@@ -60,9 +59,6 @@ class GrowingPlant(db.Model):
 
     def harvest(self):
         """Harvest the grown seed and collect and random plant"""
-        if self.harvested:
-            raise ValueError('This plant has already been harvested!')
-        
         if not self.is_harvestable():
             remaining = self.time_remaining()
             raise ValueError(f'Plant is not ready for harvest! {remaining} seconds remaining.')
@@ -76,8 +72,6 @@ class GrowingPlant(db.Model):
         # Get plant value
         plant_value = random.randint(plant.min_value, plant.max_value)
 
-        # Mark harvested
-        self.harvested = True
         db.session.commit()
 
         return plant, plant_value
