@@ -7,6 +7,23 @@ const inventoryTabs = document.querySelectorAll('.tab-btn');
 let selectedSeedID = null; // Track which seed User has selected
 let growingPlantTimers = new Map(); // Track growth countdown timers for plant displays
 
+// Setup inventory tab switching
+
+inventoryTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+        // Remove active class from all tabs and containers
+        inventoryTabs.forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.inventory-content').forEach(content => content.classList.remove('active'));
+
+        // Add active class to clicked tab
+        tab.classList.add('active');
+
+        // Show corresponding inventory container
+        const tabType = tab.getAttribute('data-tab');
+        document.getElementById(`inventory-${tabType}`).classList.add('active');
+    });
+});
+
 // Create a countdown for plant growth, updates every second
 function startGrowTimer(plantID, elapsedTime, totalTime) {
     // Clear existing timer (if one exists)
@@ -105,7 +122,7 @@ async function loadGrowingPlants() {
             return `
                 <div id="plant-${plant.id}" class="growing-plant ${isReady ? 'ready' : ''}">
                     <div class="plant-info">
-                        <div class="plant-name">${plant.name}</div>
+                        <div class="seed-name">${plant.name}</div>
                         <div class="plant-time">
                             ${isReady ? 'Ready!' : `${Math.ceil(timeLeft)}s`}
                         </div>
