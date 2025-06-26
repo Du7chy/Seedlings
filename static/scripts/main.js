@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Add close button
         const closeBtn = document.createElement('button')
         closeBtn.innerHTML = 'x';
-        closeBtn.className = 'close-message';
+        closeBtn.className = 'btn btn-small btn-secondary message-close';
         closeBtn.onclick = () => {
             message.style.opacity = '0';
             setTimout(() => {
@@ -37,7 +37,7 @@ function jsMessage(message, type = 'info') {
     // Add close button
     const closeBtn = document.createElement('button');
     closeBtn.innerHTML = 'x';
-    closeBtn.className = 'close-message';
+    closeBtn.className = 'btn btn-small btn-secondary message-close';
     closeBtn.onlcick = () => {
         notification.style.opacity = '0';
         setTimout(() => notification.remove(), 300); // Wait for fade out animation
