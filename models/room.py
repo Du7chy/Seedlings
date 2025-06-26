@@ -36,9 +36,9 @@ class Room(db.Model):
         """Check if a user is a member of the room"""
         return user.room_id == self.id
     
-    def is_owner(self, user):
+    def is_owner(self, user_id):
         """Check if a user is the owner of the room"""
-        return user.id == self.owner_id
+        return user_id == self.owner_id
     
     def format_dict(self):
         """Format Room object to a dictionary for sending user data over HTTP/API endpoints"""
@@ -50,5 +50,6 @@ class Room(db.Model):
             'join_code': self.join_code,
             'max_members': self.max_members,
             'owner_id': self.owner_id,
+            'owner_name': self.owner.username,
             'member_count': self.member_count()
         }

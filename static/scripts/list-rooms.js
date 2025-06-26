@@ -50,19 +50,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="room-card-content">
                     <div class="room-stats">
                         <span title="Members">👥 ${room.member_count}/${room.max_members}</span>
-                        <span class="room-owner">Created by ${room.owner}</span>
+                        <span class="room-owner">Created by ${room.owner_name}</span>
                     </div>
                 </div>
                 <div class="room-card-actions">
-                    ${room.is_full ? `
-                        <button disabled class="btn btn-secondary">Room Full</button>
-                    ` : room.is_private ? `
-                        <div class="private-room-join">
-                            <span class="join-code">Join Code: <code>${room.join_code}</code></span>
-                        </div>
-                    ` : `
-                        <button onclick="joinRoom(${room.id})" class="btn btn-primary">Join Room</button>
-                    `}
+                    <button class="btn btn-primary join-room-btn" 
+                            onclick="joinRoom(${room.id})"
+                            ${room.is_full ? 'disabled' : ''}>
+                        ${room.is_full ? 'Room Full' : 'Join Room'}
+                    </button>
                 </div>
             </div>
         `;
@@ -85,7 +81,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (rooms.length === 0) {
                 roomList.innerHTML = `
                     <div class="no-rooms">
-                        <p>No rooms found ${query ? `matching "${query}"` : ''}.</p>
+                        <p>No rooms found${query ? ` matching "${query}"` : ''}.</p>
                         <a href="{{ url_for('rooms.create_room') }}" class="btn btn-primary">Create a Room</a>
                     </div>
                 `;
