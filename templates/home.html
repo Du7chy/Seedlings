@@ -2,13 +2,19 @@
 
 {% block title %}Seedlings | Home{% endblock %}
 
-{% block content %}
-    <div class="emoji-logo">🌱🪴🌼</div>
-    <h1>Welcome to Seedlings, {{ current_user.username }}</h1>
-    <p>Grow your garden. Chill with friends. Discover new sprouts.</p>
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='CSS/home.css') }}">
+{% endblock %}
 
-    <nav class="button-container">
-        <a href="#" class="btn">Join a Room</a>
-        <a href="#" class="btn">Create a Room</a>
-    </nav>
+{% block content %}
+    <div class="home-container">
+        <div class="emoji-logo">🌱🪴🌼</div>
+        <h1>Welcome to Seedlings, {{ current_user.username }}</h1>
+        <p>Grow your garden. Chill with friends. Discover new sprouts.</p>
+
+        <div class="button-container">
+            <a href="{{ url_for('rooms.room_list') }}" class="btn btn-primary">Join a Room</a>
+            <a href="{{ url_for('rooms.create_room') }}" class="btn btn-primary">Create a Room</a>
+        </div>
+    </div>
 {% endblock %}

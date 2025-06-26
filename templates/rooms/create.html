@@ -2,18 +2,14 @@
 
 {% block title %}Seedlings | Create Room{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='CSS/create.css') }}">
+{% endblock %}
+
 {% block content %}
 <div class="form-container">
     <div class="form-card">
         <h2>Create a Garden Room</h2>
-        
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category }}">{{message}}</div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
 
         <form method="POST" class="create-room-form">
             <div class="form-group">

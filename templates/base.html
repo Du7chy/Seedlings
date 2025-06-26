@@ -10,9 +10,14 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <!-- Base CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='CSS/styles.css') }}">
+    {% block extra_css %}{% endblock %}
 </head>
 <body>
     <nav class="main-nav">
@@ -21,8 +26,7 @@
             {% if current_user.is_authenticated %}
             <div class="nav-links">
                 <a href="{{ url_for('views.home') }}" class="nav-link">Home</a>
-                <a href="#" class="nav-link">Rooms</a>
-                    <a href="/journal" class="nav-link">Journal</a>
+                <a href="{{ url_for('rooms.room_list') }}" class="nav-link">Rooms</a>
             </div>
             {% endif %}
             <div class="user-menu">

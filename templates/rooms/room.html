@@ -1,9 +1,16 @@
-{% extends base.html %}
+{% extends "base.html" %}
 
 {% block title %}Seedlings | {{ room.name }}{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='CSS/room.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='CSS/game.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='CSS/sidebar.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='CSS/shop.css') }}">
+{% endblock %}
+
 {% block content %}
-<div class="game-container">
+<div class="game-container" data-room-id="{{ room.id }}">
     <div class="room-header">
         <div class="room-info">
             <h1>{{ room.name }}</h1>
@@ -23,7 +30,7 @@
             <div class="join-code-display">
                 <span>Join Code: </span>
                 <code>{{ room.join_code }}</code>
-                <button id="copy-code" class="btn btn-icon" title="Copy join code">📋</button>
+                <button id="copy-code" class="btn btn-small btn-icon" title="Copy join code">📋</button>
             </div>
         </div>
     </div>
@@ -108,6 +115,9 @@
             <!-- Member List Section -->
             <div class="members">
                 <h3>Members (<span id="member-count">{{ member_count }}</span>/<span>{{ room.max_members }}</span>)</h3>
+                {% if member_count >= room.max_members %}
+                    <div class="room-full">Room Full</div>
+                {% endif %}
                 <div id="member-list" class="member-list">
                     {% for member in members %}
                     <div class="member" data-user-id="{{ member.id }}">

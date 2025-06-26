@@ -2,6 +2,10 @@
 
 {% block title %}Seedlings | Rooms{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='CSS/list.css') }}">
+{% endblock %}
+
 {% block content %}
 <div class="room-list-container">
     <div class="room-list-header">
@@ -19,7 +23,7 @@
     <div class="room-filters">
         <div class="search-bar">
             <input type="text" id="room-search" placeholder="Search rooms...">
-            <button id="search-btn" class="btn btn-icon">🔍</button>
+            <button id="search-btn" class="btn btn-small btn-icon">🔍</button>
         </div>
 
         <!-- Join Room Popup -->

@@ -1,0 +1,281 @@
+/* shop.css - Seedlings Game Shop Styles */
+
+/* Shop Tabs */
+
+.shop-tabs {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid var(--light-green);
+  padding-bottom: 0.5rem;
+}
+
+.shop-tabs .tab-btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  background: none;
+  color: var(--gray);
+  cursor: pointer;
+  font-weight: 500;
+  transition: color 0.2s;
+  position: relative;
+}
+
+.shop-tabs .tab-btn::after {
+  content: '';
+  position: absolute;
+  bottom: -0.5rem;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--green);
+  transform: scaleX(0);
+  transition: transform 0.2s;
+}
+
+.shop-tabs .tab-btn:hover {
+  color: var(--green);
+}
+
+.shop-tabs .tab-btn.active {
+  color: var(--dark-green);
+  font-weight: 600;
+}
+
+.shop-tabs .tab-btn.active::after {
+  transform: scaleX(1);
+  opacity: 0.8;
+}
+
+/* Shop Items */
+
+.shop-content {
+  display: none;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.shop-content.active {
+  display: block;
+}
+
+.seed-catalog, .plant-catalog {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.shop-item {
+  background: var(--light-green);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  border: 1px solid transparent;
+}
+
+.shop-item:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+  border-color: var(--green);
+}
+
+.shop-item.selected {
+  background: var(--green);
+  color: var(--cream);
+  border-color: var(--dark-green);
+}
+
+.item-icon {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.item-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.item-name {
+  font-weight: 500;
+  color: inherit;
+}
+
+.item-details {
+  font-size: 0.9rem;
+  color: var(--gray);
+  line-height: 1.4;
+}
+
+.shop-item.selected .item-details {
+  color: var(--cream);
+  opacity: 0.9;
+}
+
+.price {
+  font-weight: 500;
+  color: inherit;
+}
+
+.plant-item {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+}
+
+.sell-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(var(--dark-green-rgb), 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border-radius: inherit;
+}
+
+.plant-item:hover .sell-overlay {
+  opacity: 1;
+}
+
+.sell-icon {
+  font-size: 1.5rem;
+  color: var(--cream);
+  animation: bounce 0.5s ease infinite alternate;
+}
+
+/* Buy Controls */
+
+.buy-controls {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  margin-top: 1.5rem;
+  padding: 1.25rem;
+  background: var(--cream);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.quantity-control {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.quantity-control label {
+  color: var(--dark-green);
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+.quantity-control input {
+  width: 80px;
+  padding: 0.5rem;
+  border: 1px solid var(--light-green);
+  border-radius: var(--radius-md);
+  text-align: center;
+  font-size: 1rem;
+  font-family: inherit;
+  transition: border-color 0.2s;
+}
+
+.quantity-control input:focus {
+  outline: none;
+  border-color: var(--green);
+  box-shadow: 0 0 0 2px rgba(var(--green-rgb), 0.1);
+}
+
+.total-cost {
+  margin: auto;
+  font-weight: 500;
+  color: var(--dark-green);
+  font-size: 1.1rem;
+}
+
+.buy-controls .btn {
+  min-width: 120px;
+}
+
+.buy-controls .btn:disabled {
+  background: var(--gray);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.buy-controls .btn:not(:disabled):hover {
+  background: var(--dark-green);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes bounce {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-5px);
+  }
+}
+
+@media (max-width: 768px) {
+  .popup-content {
+    padding: 1rem;
+  }
+
+  .shop-tabs {
+    gap: 1rem;
+  }
+
+  .seed-catalog, .plant-catalog {
+    grid-template-columns: 1fr;
+  }
+
+  .buy-controls {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+
+  .buy-controls .btn {
+    width: 100%;
+  }
+
+  .quantity-control {
+    justify-content: space-between;
+  }
+
+  .quantity-control input {
+    flex: 1
+  }
+
+  .total-cost {
+    margin: 0 0.5rem 0;
+    text-align: right;
+  }
+
+  .shop-item {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .item-icon {
+    font-size: 2rem;
+  }
+}

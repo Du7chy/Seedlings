@@ -1,0 +1,92 @@
+/* room.css - Seedlings Game Room Styles */
+
+/* Room */
+
+.game-container {
+  padding: 2rem;
+}
+
+.room-header {
+  background: var(--cream);
+  padding: 1.5rem;
+  border-radius: var(--radius-lg);
+  margin-bottom: 2rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.room-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.room-info h1 {
+  margin: 0;
+  color: var(--dark-green);
+}
+
+.room-private {
+  background: var(--dark-green);
+  color: var(--cream);
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+}
+
+.room-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.join-code-display {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--light-green);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-lg);
+}
+
+.join-code-display code {
+  font-family: var(--font-code);
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--dark-green);
+  letter-spacing: 0.02rem;
+}
+
+.room-content {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+@media (max-width: 768px) {
+  .game-container {
+    padding: 1rem;
+  }
+
+  .room-header {
+    padding: 1rem;
+  }
+
+  .room-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .room-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .join-code-display {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+}
