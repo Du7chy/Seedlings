@@ -38,12 +38,26 @@ if (typeof io !== 'undefined') {
 
 // Initialise room when DOM has loaded
 document.addEventListener('DOMContentLoaded', () => {
+
+    // Handle room leave on page unload
+    window.addEventListener('beforeunload', () => {
+        // Get room ID from window object
+        const roomID = window.SEEDLINGS.ROOM_ID;
+        if (!roomID) return;
+
+        // Send leave request
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', `/api/rooms/${roomID}/leave`, false);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send();
+    });
+
     // Initialise room ID and join socket room
     try {
         const gameContainer = document.querySelector('.game-container');
         if (!gameContainer) return; // User isn't on a room page
 
-        const roomID = gameContainer.dataset.roomID;
+        const roomID = gameContainer.dataset.roomId;
         if (!roomID) {
             throw new Error('Game container found but no room ID provided.');
         }
@@ -121,11 +135,4 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-
-    // Handle room leave on page unload
-    window.addEventListener('beforeunload', () => {
-        if (socket && window.SEEDLINGS.ROOM_ID != null) {
-            socket.emit('leave', { room_id: String(window.SEEDLINGS.ROOM_ID) });
-        }
-    });
 });

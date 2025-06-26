@@ -44,14 +44,16 @@ def create_room():
 
         # Create room
         room = Room(name, is_private, max_members, join_code)
-        room.owner = current_user # Set the creator as the owner
-        room.members.append(current_user) # Add creator to member list
+        room.owner = current_user # Set the creator as the owner of the room
+        db.session.add(room)
+        db.session.flush()
+        current_user.room_id = room.id # Update User's current room and add them to member list
 
         db.session.add(room)
         db.session.commit()
 
         flash('Room created successfully!', 'success')
-        return redirect(url_for('rooms.view_room', room_id=room.id))
+        return redirect(url_for('rooms.load_room', room_id=room.id))
     
     return render_template('rooms/create.html')
 
@@ -113,7 +115,7 @@ def load_room(room_id):
 
     # Repeat checks from join_room route for security (prevents URL crafting)
     
-    if current_user.room_id != room_id:
+    if current_user.room_id and current_user.room_id != room_id:
         flash("You can only be in one room at a time! Please leave your current room and try again!", 'error')
         return redirect(url_for('rooms.load_room', room_id=current_user.room_id))
     
