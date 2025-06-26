@@ -4,8 +4,6 @@ from flask import request
 from models.database import db
 from models.room import Room
 from models.chat_message import ChatMessage
-from datetime import datetime
-import pytz
 
 def init_socket_events(socketio):
     @socketio.on('connect')
@@ -67,10 +65,9 @@ def init_socket_events(socketio):
         
         # Save message to database
         message = ChatMessage(
-            message=message_content,
+            message_content=message_content,
             room_id=room_id,
             user_id=current_user.id,
-            timestamp=datetime.now(pytz.timezone('Australia/Sydney'))
         )
         db.session.add(message)
         db.session.commit()

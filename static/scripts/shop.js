@@ -7,14 +7,14 @@ const seedCatalog = document.querySelector('.seed-catalog');
 const plantCatalog = document.querySelector('.plant-catalog');
 const buyBtn = document.getElementById('buy-seeds');
 const quantityInput = document.getElementById('seed-quantity');
-let selectedSeedID = null;
-let selectedSeedPrice = 0;
+let selectedItemID = null;
+let selectedItemPrice = 0;
 let currentBalance = 0;
 
 // Update buy button state based on quantity and price
 function updateBuyBtn() {
     const quantity = parseInt(quantityInput.value) || 1;
-    const totalCost = selectedSeedPrice * quantity;
+    const totalCost = selectedItemPrice * quantity;
 
     // Update total cost display
     const costDisplay = document.querySelector('.total-cost');
@@ -23,7 +23,7 @@ function updateBuyBtn() {
     }
     
     // Disable button if User can't afford or inputted invalid quantity
-    buyBtn.disabled = !selectedSeedID || totalCost > currentBalance || quantity < 1;
+    buyBtn.disabled = !selectedItemID || totalCost > currentBalance || quantity < 1;
 }
 
 // Get User's current balance from server
@@ -45,11 +45,11 @@ async function getItemPrice(seedID) {
     try {
         const response = await fetch(`/api/shop/seeds/${seedID}/price`);
         const data = await response.json();
-        selectedSeedPrice = data.price;
+        selectedItemPrice = data.price;
         updateBuyBtn();
     } catch (error) {
         console.error('Error getting item price:', error);
-        selectedSeedPrice = Infinity; // Fallback to disable buying if price could not be retrieved
+        selectedItemPrice = Infinity; // Fallback to disable buying if price could not be retrieved
         updateBuyBtn();
     }
 }
@@ -57,11 +57,11 @@ async function getItemPrice(seedID) {
 // Select item to buy
 window.selectToBuy = (seedID) => {
     // If item already selected - unselect item
-    if (selectedSeedID === seedID) {
-        selectedSeedID = null;
-        selectedSeedPrice = 0;
+    if (selectedItemID === seedID) {
+        selectedItemID = null;
+        selectedItemPrice = 0;
     } else {
-        selectedSeedID = seedID;
+        selectedItemID = seedID;
         getItemPrice(seedID);
     }
 
@@ -77,7 +77,7 @@ async function loadBuyTab() {
         const items = await response.json();
 
         seedCatalog.innerHTML = items.map(item => `
-            <div class="shop-item ${item.id === selectedSeedID ? 'selected' : ''}" onclick="selectToBuy(${item.id})">
+            <div class="shop-item ${item.id === selectedItemID ? 'selected' : ''}" onclick="selectToBuy(${item.id})">
                 <div class="item-icon">🌱</div>
                 <div class="item-info">
                     <div class="item-name">${item.name}</div>
@@ -104,7 +104,7 @@ async function loadSellTab() {
                 <div class="item-info">
                     <div class="item-name">${plant.name}</div>
                     <div class="item-details">
-                        <div class="prive">Value: $${plant.value}</div>
+                        <div class="price">Value: $${plant.value}</div>
                     </div>
                 </div>
                 <div class="sell-overlay">
@@ -121,21 +121,21 @@ async function loadSellTab() {
 openShopBtn.addEventListener('click', () => {
     shopPopup.style.display = 'block';
     getBalance();
-    loadShopItems();
-    loadSellableItems();
+    loadBuyTab()
+    loadSellTab();
 });
 
 closeShopBtn.addEventListener('click', () => {
     shopPopup.style.display = 'none';
-    selectedSeedID = null;
-    quantityInput = '1';
+    selectedItemID = null;
+    quantityInput.value = '1';
     buyBtn.disabled = true;
 });
 
 shopPopup.addEventListener('click', (e) => {
     if (e.target === shopPopup) {
         shopPopup.style.display = 'none';
-        selectedSeedID = null;
+        selectedItemID = null;
         quantityInput = '1';
         buyBtn.disabled = true;
     }
@@ -158,10 +158,10 @@ quantityInput.addEventListener('input', updateBuyBtn);
 
 // Buy Item
 buyBtn.addEventListener('click', async () => {
-    if (!selectedSeedID) return;
+    if (!selectedItemID) return;
 
     const quantity = parseInt(quantityInput.value) || 1;
-    const totalCost = selectedSeedID * quantity;
+    const totalCost = selectedItemID * quantity;
 
     // Check user can afford the purchase
     if (totalCost > currentBalance) {
@@ -174,14 +174,14 @@ buyBtn.addEventListener('click', async () => {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                seed_id: selectedSeedID,
+                seed_id: selectedItemID,
                 quantity: quantity
             })
         });
         
         const data = await response.json();
         if (data.success) {
-            selectedSeedID = null;
+            selectedItemID = null;
             quantityInput.value = '1';
             buyBtn.disabled = true;
             loadShopItems();
