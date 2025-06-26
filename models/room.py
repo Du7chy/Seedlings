@@ -40,6 +40,9 @@ class Room(db.Model):
         """Check if a user is the owner of the room"""
         return user_id == self.owner_id
     
+    def is_full(self):
+        return self.member_count() >= self.max_members
+    
     def format_dict(self):
         """Format Room object to a dictionary for sending user data over HTTP/API endpoints"""
         return {
@@ -51,5 +54,6 @@ class Room(db.Model):
             'max_members': self.max_members,
             'owner_id': self.owner_id,
             'owner_name': self.owner.username,
-            'member_count': self.member_count()
+            'member_count': self.member_count(),
+            'is_full': self.is_full()
         }
