@@ -7,7 +7,7 @@ class ChatMessage(db.Model):
     message_content = db.Column(db.String(500), nullable=False)
     timestamp = db.Column(db.DateTime, default=lambda: datetime.now(pytz.timezone('Australia/Sydney')))
     room_id = db.Column(db.Integer, db.ForeignKey('room.id', ondelete='CASCADE'), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
+    user_id = db.Column(db.String(36), db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
 
     # Relationships
 
