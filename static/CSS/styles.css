@@ -350,6 +350,11 @@ p {
   transform: translate(-50%, -50%);
 }
 
+.popup-content input {
+  border-radius: (var(--radius-lg));
+  padding: 0.5rem;
+}
+
 .popup-header {
   display: flex;
   justify-content: space-between;
