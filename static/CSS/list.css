@@ -27,7 +27,9 @@
 
 .search-bar input {
   outline: none;
+  padding: 0 1rem;
   border-color: var(--green);
+  border-radius: var(--radius-md);
 }
 
 .room-grid {
@@ -37,6 +39,7 @@
 }
 
 .room-card {
+  margin-top: 1rem;
   background: var(--cream);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);

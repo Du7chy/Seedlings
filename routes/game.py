@@ -5,6 +5,7 @@ from models.seed import Seed
 from models.growing_plant import GrowingPlant
 from models.user_plant_record import UserPlantRecord
 from models.plant_inv import PlantInv
+from models.seed_inv import SeedInv
 from datetime import datetime
 import pytz
 
@@ -17,11 +18,16 @@ def get_inv():
     # Get User's seeds with quantities
     seed_inv = []
     for seed in current_user.seeds:
-        seed_inv.append({
-            'id': seed.id,
-            'name': seed.name,
-            'quantity': seed.quantity
-        })
+        inv_entry = SeedInv.query.filter_by(
+            user_id=current_user.id,
+            seed_id=seed.id
+        ).first()
+        if inv_entry:
+            seed_inv.append({
+                'id': seed.id,
+                'name': seed.name,
+                'quantity': inv_entry.quantity
+            })
 
     # Get User's plants
     plant_inv = [{
@@ -147,14 +153,28 @@ def get_balanced():
 @login_required
 def get_shop_items():
     """Get all items sold in the shop"""
-    seeds = Seed.query.all()
-    return jsonify([
-        {
-            'id': seed.id,
-            'name': seed.name,
-            'price': seed.price
-        } for seed in seeds
-    ])
+    try:
+        seeds = Seed.query.all()
+        return jsonify([
+            {
+                'id': seed.id,
+                'name': seed.name,
+                'price': seed.cost
+            } for seed in seeds
+        ])
+    except Exception as e:
+        return jsonify([]), 500
+    
+@game.route('/api/shop/items/<int:seed_id>')
+@login_required
+def get_selected_item(seed_id):
+    """Get data for selected shop item"""
+    seed = Seed.query.filter_by(id=seed_id).first()
+    return jsonify({
+        'id': seed.id,
+        'name': seed.name,
+        'price': seed.cost
+    })
 
 @game.route('/api/shop/buy', methods=['POST'])
 @login_required
@@ -183,7 +203,7 @@ def buy_items():
     db.session.commit()
 
     return jsonify({
-        'success': False,
+        'success': True ,
         'message': f"You bought x{quantity} {seed.name}(s)!",
         'balance': current_user.currency
     })

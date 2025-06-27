@@ -43,7 +43,7 @@ async function getBalance() {
 // Get Item Price
 async function getItemPrice(seedID) {
     try {
-        const response = await fetch(`/api/shop/seeds/${seedID}/price`);
+        const response = await fetch(`/api/shop/items/${seedID}`);
         const data = await response.json();
         selectedItemPrice = data.price;
         updateBuyBtn();
@@ -67,7 +67,7 @@ window.selectToBuy = (seedID) => {
 
     getBalance(); // Get User's current balance
     updateBuyBtn(); // Update buy button based on new information
-    loadShopItems(); // Refresh selection
+    loadBuyTab(); // Refresh selection
 }
 
 // Load Buy Tab
@@ -136,7 +136,7 @@ shopPopup.addEventListener('click', (e) => {
     if (e.target === shopPopup) {
         shopPopup.style.display = 'none';
         selectedItemID = null;
-        quantityInput = '1';
+        quantityInput.value = '1';
         buyBtn.disabled = true;
     }
 });
@@ -146,7 +146,7 @@ shopTabs.forEach(tab => {
     tab.addEventListener('click', () => {
         shopTabs.forEach(t => {
             t.classList.remove('active');
-            document.getElementById(`${t.dataset.tab}-tab`).classList.remove('active');
+            document.querySelectorAll('.shop-content').forEach(content => content.classList.remove('active'));
         });
         tab.classList.add('active');
         document.getElementById(`${tab.dataset.tab}-tab`).classList.add('active');
@@ -161,7 +161,7 @@ buyBtn.addEventListener('click', async () => {
     if (!selectedItemID) return;
 
     const quantity = parseInt(quantityInput.value) || 1;
-    const totalCost = selectedItemID * quantity;
+    const totalCost = selectedItemPrice * quantity;
 
     // Check user can afford the purchase
     if (totalCost > currentBalance) {
@@ -178,13 +178,17 @@ buyBtn.addEventListener('click', async () => {
                 quantity: quantity
             })
         });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
         
         const data = await response.json();
         if (data.success) {
             selectedItemID = null;
             quantityInput.value = '1';
             buyBtn.disabled = true;
-            loadShopItems();
+            loadBuyTab();
             loadInventory();
             // Update User's balance
             const currencyDisplay = document.querySelector('.currency');

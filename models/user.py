@@ -60,31 +60,18 @@ class User(db.Model, UserMixin):
 
     def add_seed(self, seed, quantity=1):
         """Add a seed to User's inventory"""
-        if seed not in self.seeds:
-            self.seeds.append(seed)
-            # Create new inventory entry with seed quantity
-            inv_entry = SeedInv(
-                user_id=self.id,
-                seed_id=seed.id,
-                quantity=quantity
-            )
-            db.session.add(inv_entry)
+        # Check for existing inventory entry
+        inv_entry = SeedInv.query.filter_by(user_id=self.id, seed_id=seed.id).first()
+
+        if inv_entry:
+            # Add quantity to existing inventory entry
+            inv_entry.quantity += quantity
         else:
-            # Increment quantity in existing inventory entry
-            inv_entry = SeedInv.query.filter_by(
-                user_id=self.id,
-                seed_id=seed.id
-            ).first()
-            if inv_entry:
-                inv_entry.quantity += quantity
-            else:
-                # Handle possible error (seed in self.seeds but no inventory entry)
-                inv_entry = SeedInv(
-                    user_id=self.id,
-                    seed_id=seed.id,
-                    quantity=quantity
-                )                
-                db.session.add(inv_entry)
+            # Create a new inventory entry
+            inv_entry = SeedInv(self.id, seed.id, quantity)
+            db.session.add(inv_entry)
+            if seed not in self.seeds:
+                self.seeds.append(seed)
     
     def remove_seed(self, seed):
         """Remove a seed from User's inventory"""
