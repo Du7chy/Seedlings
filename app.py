@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_login import LoginManager
-from flask_migrate import Migrate
+from models.base_content import base_content
 from flask_socketio import SocketIO
 import os
 from config import config
@@ -21,7 +21,6 @@ def create_app(config_name=os.environ.get('FLASK_ENV')):
 
     # Initialise extentions
     db.init_app(app)
-    migrate = Migrate(app, db)
 
     login_manager = LoginManager()
     login_manager.login_view = "auth.login"
@@ -35,17 +34,7 @@ def create_app(config_name=os.environ.get('FLASK_ENV')):
     from sockets.events import init_socket_events
     init_socket_events(socketio)
 
-    # Import all models for Flask-Migrate to detect
     from models.user import User
-    from models.plant import Plant
-    from models.seed import Seed
-    from models.loot_table import LootTable
-    from models.room import Room
-    from models.chat_message import ChatMessage
-    from models.plant_inv import PlantInv
-    from models.seed_inv import SeedInv
-    from models.growing_plant import GrowingPlant
-    from models.user_plant_record import UserPlantRecord
 
     @login_manager.user_loader
     def load_user(id):
@@ -65,6 +54,8 @@ def create_app(config_name=os.environ.get('FLASK_ENV')):
     # Create database if one doesnt exist
     with app.app_context():
         db.create_all()
+        # Add base data
+        base_content()
         print(f'Database ready at: {app.config["SQLALCHEMY_DATABASE_URI"]}')
 
     return app

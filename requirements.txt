@@ -3,7 +3,6 @@ flask-socketio
 python-socketio
 flask-login
 flask-sqlalchemy
-flask-migrate
 jinja2
 werkzeug
 python-dotenv
