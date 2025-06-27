@@ -144,12 +144,14 @@ shopPopup.addEventListener('click', (e) => {
 // Shop Tab Switching
 shopTabs.forEach(tab => {
     tab.addEventListener('click', () => {
-        shopTabs.forEach(t => {
-            t.classList.remove('active');
-            document.querySelectorAll('.shop-content').forEach(content => content.classList.remove('active'));
-        });
+        shopTabs.forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.shop-content').forEach(content => content.classList.remove('active'));
+
+        // Add active class to clicked tab
         tab.classList.add('active');
-        document.getElementById(`${tab.dataset.tab}-tab`).classList.add('active');
+
+        const tabType = tab.getAttribute('data-tab');
+        document.getElementById(`${tabType}-tab`).classList.add('active');
     });
 });
 

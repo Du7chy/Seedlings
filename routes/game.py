@@ -53,11 +53,16 @@ def get_growing():
         user_id=current_user.id,
     ).all()
 
-    now = datetime.now(pytz.timezone('Australia/Sydney'))
+    sydney_tz = pytz.timezone('Australia/Sydney')
+    now = datetime.now(sydney_tz)
     plants = []
 
     for plant in growing:
-        elapsed = (now - plant.planted_at).total_seconds()
+        planted_at = plant.planted_at
+        if not planted_at.tzinfo:
+            planted_at = sydney_tz.localize(planted_at)
+
+        elapsed = (now - planted_at).total_seconds()
         plants.append({
             'id': plant.id,
             'name': plant.seed.name,
@@ -85,7 +90,7 @@ def plant_seed():
     
     grow = GrowingPlant(
         user_id=current_user.id,
-        seed_id=seed_id
+        seed_id=seed.id
     )
 
     # Consume planted seed
@@ -117,7 +122,9 @@ def harvest(plant_id):
     
     # Select random plant and value from seed loot table
     try:
-        ran_plant, value = plant.seed.generate_random_plant()
+        ran_plant, value = plant.harvest()
+
+        # Add plant to User's inventory
         current_user.add_plant(ran_plant, value)
 
         # Update User's plant record
@@ -126,7 +133,7 @@ def harvest(plant_id):
 
         # Remove seed from growing plants
         db.session.delete(plant)
-        db.session.commit
+        db.session.commit()
 
         return jsonify({
             'success': True,
@@ -216,23 +223,27 @@ def sell_item():
     if not inv_entry_id:
         return jsonify({'success': False, 'message': "No plant selected!"})
     
-    # Find the specific plant in User's inventory
-    plant = PlantInv.query.filter_by(
-        id=inv_entry_id,
-        user_id=current_user.id
-    ).first()
+    try:
+        # Find the specific plant in User's inventory
+        plant = PlantInv.query.options(db.joinedload(PlantInv.plant)).filter_by(
+            id=inv_entry_id,
+            user_id=current_user.id
+        ).first()
 
-    if not plant:
-        return jsonify({'success': False, 'message': "You do not have this plant!"})
-    
-    # Add plant value to balance
-    current_user.currency += plant.value
-    # Remove plant from User's inventory
-    current_user.remove_plant(plant)
-    db.session.commit()
+        if not plant:
+            return jsonify({'success': False, 'message': "You do not have this plant!"})
+        
+        # Add plant value to balance
+        current_user.currency += plant.value
+        # Remove plant from User's inventory
+        current_user.remove_plant(plant)
+        db.session.commit()
 
-    return jsonify({
-        'success': True,
-        'message': f"You sold {plant.plant.name} [{plant.plant.rarity}] for ${plant.value}!",
-        'balance': current_user.currency
-    })
+        return jsonify({
+            'success': True,
+            'message': f"You sold {plant.plant.name} [{plant.plant.rarity}] for ${plant.value}!",
+            'balance': current_user.currency
+        })
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'success': False, 'message': str(e)})

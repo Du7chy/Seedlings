@@ -8,7 +8,7 @@ class GrowingPlant(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.String(36), db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
     seed_id = db.Column(db.Integer, db.ForeignKey('seed.id', ondelete='CASCADE'), nullable=False)
-    planted_at = db.Column(db.DateTime, default=datetime.now(pytz.timezone('Australia/Sydney')))
+    planted_at = db.Column(db.DateTime, default=lambda: datetime.now(pytz.timezone('Australia/Sydney')))
     growth_time = db.Column(db.Integer, nullable=False)
     is_ready = db.Column(db.Boolean, default=False)
 
@@ -20,9 +20,9 @@ class GrowingPlant(db.Model):
     seed = db.relationship('Seed', back_populates='growing_plants')
 
 
-    def __init__(self, user_id, plant_id):
+    def __init__(self, user_id, seed_id):
         self.user_id = user_id
-        self.plant_id = plant_id
+        self.seed_id = seed_id
 
         # Fetch the seed used to get the min/max growth times
         used_seed = Seed.query.get(self.seed_id)
@@ -35,8 +35,15 @@ class GrowingPlant(db.Model):
         if self.is_ready:
             return self.is_ready
         
-        now = datetime.now(pytz.timezone('Australia/Sydney'))
-        ready = now >= self.planted_at + timedelta(seconds=self.growth_time)
+        sydney_tz = pytz.timezone('Australia/Sydney')
+        now = datetime.now(sydney_tz)
+        
+        planted_at = self.planted_at
+        if not planted_at.tzinfo:
+            planted_at = sydney_tz.localize(planted_at)
+            
+        harvest_time = planted_at + timedelta(seconds=self.growth_time)
+        ready = now >= harvest_time
 
         if ready:
             self.is_ready = True
@@ -49,8 +56,14 @@ class GrowingPlant(db.Model):
         if self.is_ready:
             return 0
         
-        now = datetime.now(pytz.timezone('Australia/Sydney'))
-        harvest_time = self.planted_at + timedelta(minutes=self.growth_time)
+        sydney_tz = pytz.timezone('Australia/Sydney')
+        now = datetime.now(sydney_tz)
+        
+        planted_at = self.planted_at
+        if not planted_at.tzinfo:
+            planted_at = sydney_tz.localize(planted_at)
+            
+        harvest_time = planted_at + timedelta(seconds=self.growth_time)
 
         if now >= harvest_time:
             return 0
@@ -65,9 +78,6 @@ class GrowingPlant(db.Model):
         
         # Select a random plant from the seeds loot table
         plant = self.seed.generate_random_plant()
-
-        # Record plant for user
-        plant.record(self.user_id)
 
         # Get plant value
         plant_value = random.randint(plant.min_value, plant.max_value)
