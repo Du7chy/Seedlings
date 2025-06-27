@@ -13,6 +13,38 @@ def room_list():
     """List all available rooms"""
     return render_template('rooms/list.html')
 
+@rooms.route('/api/rooms/list')
+@login_required
+def list_rooms():
+    """API endpoint to list all available rooms"""
+    query = request.args.get('q', '').strip()
+    
+    # Build base query
+    rooms_query = Room.query
+    
+    # Apply search filter if query provided
+    if query:
+        rooms_query = rooms_query.filter(Room.name.ilike(f'%{query}%'))
+    
+    # Get all matching rooms
+    rooms = rooms_query.all()
+    
+    # Format room data for response
+    room_data = [{
+        'id': room.id,
+        'name': room.name,
+        'is_private': room.is_private,
+        'member_count': room.member_count(),
+        'max_members': room.max_members,
+        'is_full': room.member_count() >= room.max_members,
+        'owner_name': room.owner.username
+    } for room in rooms]
+    
+    return jsonify({
+        'success': True,
+        'rooms': room_data
+    })
+
 @rooms.route('/rooms/create', methods=['GET', 'POST'])
 @login_required
 def create_room():

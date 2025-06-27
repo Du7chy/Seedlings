@@ -73,23 +73,27 @@ document.addEventListener('DOMContentLoaded', function() {
             const params = new URLSearchParams();
             if (query) params.append('q', query);
 
-            const response = await fetch(`/api/rooms/search?${params.toString()}`);
+            const response = await fetch(`/api/rooms/list?${params.toString()}`);
             if (!response.ok) throw new Error('Failed to fetch rooms');
 
-            const rooms = await response.json();
+            const data = await response.json();
 
-            if (rooms.length === 0) {
+            if (!data.success) {
+                throw new Error(data.message || 'Failed to load rooms');
+            }
+
+            if (data.rooms.length === 0) {
                 roomList.innerHTML = `
                     <div class="no-rooms">
                         <p>No rooms found${query ? ` matching "${query}"` : ''}.</p>
-                        <a href="{{ url_for('rooms.create_room') }}" class="btn btn-primary">Create a Room</a>
+                        <a href="/rooms/create" class="btn btn-primary">Create a Room</a>
                     </div>
                 `;
             } else {
-                roomList.innerHTML = rooms.map(createRoomCard).join('');
+                roomList.innerHTML = data.rooms.map(createRoomCard).join('');
             }
         } catch (error) {
-            console.error('Error loading rooms', error);
+            console.error('Error loading rooms:', error);
             roomList.innerHTML = '<div class="error-message">Failed to load rooms. Please try again.</div>';
         } finally {
             loading.style.display = 'none';
@@ -100,11 +104,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     searchInput?.addEventListener('input', (e) => {
         clearTimeout(searchTimeout);
-        searchTimeout = setTimeout(() => searchRooms(e.target.value.trim()), 300);
+        searchTimeout = setTimeout(() => loadRooms(e.target.value.trim()), 300);
     });
 
     searchBtn?.addEventListener('click', () => {
-        searchRooms(searchInput.value.trim());
+        loadRooms(searchInput.value.trim());
     });
 
     // Popup controls

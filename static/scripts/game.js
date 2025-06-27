@@ -55,6 +55,8 @@ function startGrowTimer(plantID, elapsedTime, totalTime) {
                 // Stop the timer
                 clearInterval(timer);
                 growingPlantTimers.delete(plantID);
+                // Reload growing plants to add ready class
+                loadGrowingPlants();
             } else {
                 timeDisplay.textContent = `${timeLeft}s`;
                 const progress = ((currentElapsed / totalTime) * 100);
@@ -78,7 +80,7 @@ async function loadInventory() {
 
         // Load Seeds
         seedInventory.innerHTML = data.seeds.map(seed => `
-                <div class="invetory-item ${seed.id === selectedSeedID ? 'selected': ''}" data-id="${seed.id}" onclick="toggleSeedSelect(${seed.id})">
+                <div class="inventory-item ${seed.id === selectedSeedID ? 'selected': ''}" data-id="${seed.id}" onclick="toggleSeedSelect(${seed.id})">
                     <div class="item-icon">🌱</div>
                     <div class="item-info">
                         <div class="item-name">${seed.name}</div>
@@ -114,9 +116,9 @@ async function loadGrowingPlants() {
             const isReady = plant.elapsed_time >= plant.growth_time;
             const timeLeft = plant.growth_time - plant.elapsed_time;
 
-            // Start a timer for this plant
-            if  (!isReady) {
-                setTimeout(() => startGrowTimer(plant.id, plant.elapsed_time, plant.growth_time), 0);
+            // Start a timer for this plant if one doesn't already exist
+            if  (!isReady && !growingPlantTimers.has(plant.id)) {
+                startGrowTimer(plant.id, plant.elapsed_time, plant.growth_time);
             }
 
             return `
@@ -128,11 +130,11 @@ async function loadGrowingPlants() {
                         </div>
                     </div>
                     <div class="progress-bar">
-                        <div class="progress" style="width: ${(plant.elapsedTime / plant.growth_time * 100)}%"></div>
+                        <div class="progress" style="width: ${(plant.elapsed_time / plant.growth_time * 100)}%"></div>
                     </div>
                     ${isReady ? 
                         `<button class="btn btn-success" onclick="harvestPlant(${plant.id})">
-                            <span class="btn-icon>🌿</span> Harvest
+                            <span class="btn-icon">🌿</span> Harvest
                         </button>` :
                         ''
                     }
@@ -203,7 +205,7 @@ window.harvestPlant = async (plantID) => {
 setInterval(() => {
     loadInventory();
     loadGrowingPlants();
-}, 30000); // Every 30 seconds
+}, 60000); // Every minute
 
 // Refresh on socket reconnect
 socket.on('reconnect', () => {

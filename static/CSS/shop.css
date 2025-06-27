@@ -1,5 +1,9 @@
 /* shop.css - Seedlings Game Shop Styles */
 
+#open-shop {
+  margin-top: 2rem;
+}
+
 /* Shop Tabs */
 
 .shop-tabs {
