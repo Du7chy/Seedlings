@@ -7,5 +7,6 @@ jinja2
 werkzeug
 python-dotenv
 pytz
+gunicorn
 
 # .\.venv\Scripts\pip install -r requirements.txt
