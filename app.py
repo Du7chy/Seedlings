@@ -19,7 +19,7 @@ def create_app(config_name=os.environ.get('FLASK_ENV')):
     app.config.from_object(config[config_name]) # Get configuration type
     config[config_name].init_app()
 
-    # Initialise extentions
+    # Initialise extensions
     db.init_app(app)
 
     login_manager = LoginManager()
