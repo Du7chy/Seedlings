@@ -31,7 +31,7 @@ def create_app(config_name=os.environ.get('FLASK_ENV')):
 
     # Initialise Socket.IO with app
     # Limit allowed origins for security
-    socketio.init_app(app, cors_allowed_origins=app.config['CORS_ORIGINS'])
+    socketio.init_app(app, cors_allowed_origins=app.config['CORS_ORIGINS'], async_mode="eventlet")
 
     # Initialise Socket.IO events
     from sockets.events import init_socket_events

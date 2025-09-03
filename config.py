@@ -44,7 +44,7 @@ class ProductionConfig(Config):
     SQLALCHEMY_ENGINE_OPTIONS = {
         "poolclass":NullPool
     }
-    CORS_ORIGINS = ['seedlings-5fgm.onrender.com']
+    CORS_ORIGINS = ["https://seedlings-5fgm.onrender.com"]
 
 # Dictionary of configurations
 config = {
