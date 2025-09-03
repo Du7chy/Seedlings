@@ -94,7 +94,7 @@ class User(db.Model, UserMixin):
 
         seed = GrowingPlant(user_id=self.id, seed_id=seed_id)
         db.session.add(seed)
-        db.session.commit
+        db.session.commit()
         return seed
     
     def get_growing_plants(self):

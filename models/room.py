@@ -13,7 +13,7 @@ class Room(db.Model):
     # Relationships
 
     # User --> Owner of room
-    owner_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
+    owner_id = db.Column(db.String(36), db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
     owner = db.relationship('User', back_populates='owned_room', foreign_keys=[owner_id])
     # User --> Member of room
     members = db.relationship('User', foreign_keys='User.room_id', back_populates='room')
