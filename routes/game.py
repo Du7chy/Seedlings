@@ -6,8 +6,7 @@ from models.growing_plant import GrowingPlant
 from models.user_plant_record import UserPlantRecord
 from models.plant_inv import PlantInv
 from models.seed_inv import SeedInv
-from datetime import datetime
-import pytz
+from datetime import datetime, timezone
 
 game = Blueprint('game', __name__)
 
@@ -53,14 +52,13 @@ def get_growing():
         user_id=current_user.id,
     ).all()
 
-    sydney_tz = pytz.timezone('Australia/Sydney')
-    now = datetime.now(sydney_tz)
+    now = datetime.now(timezone.utc)
     plants = []
 
     for plant in growing:
         planted_at = plant.planted_at
         if not planted_at.tzinfo:
-            planted_at = sydney_tz.localize(planted_at)
+            planted_at = planted_at.replace(tzinfo=timezone.utc)
 
         elapsed = (now - planted_at).total_seconds()
         plants.append({

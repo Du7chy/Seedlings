@@ -1,14 +1,13 @@
 from models.database import db
 from models.seed import Seed
-from datetime import datetime, timedelta
-import pytz
+from datetime import datetime, timedelta, timezone
 import random
 
 class GrowingPlant(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.String(36), db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
     seed_id = db.Column(db.Integer, db.ForeignKey('seed.id', ondelete='CASCADE'), nullable=False)
-    planted_at = db.Column(db.DateTime, default=lambda: datetime.now(pytz.timezone('Australia/Sydney')))
+    planted_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     growth_time = db.Column(db.Integer, nullable=False)
     is_ready = db.Column(db.Boolean, default=False)
 
@@ -35,12 +34,11 @@ class GrowingPlant(db.Model):
         if self.is_ready:
             return self.is_ready
         
-        sydney_tz = pytz.timezone('Australia/Sydney')
-        now = datetime.now(sydney_tz)
+        now = datetime.now(timezone.utc)
         
         planted_at = self.planted_at
         if not planted_at.tzinfo:
-            planted_at = sydney_tz.localize(planted_at)
+            planted_at = planted_at.replace(tzinfo=timezone.utc)
             
         harvest_time = planted_at + timedelta(seconds=self.growth_time)
         ready = now >= harvest_time
@@ -56,12 +54,11 @@ class GrowingPlant(db.Model):
         if self.is_ready:
             return 0
         
-        sydney_tz = pytz.timezone('Australia/Sydney')
-        now = datetime.now(sydney_tz)
+        now = datetime.now(timezone.utc)
         
         planted_at = self.planted_at
         if not planted_at.tzinfo:
-            planted_at = sydney_tz.localize(planted_at)
+            planted_at = planted_at.replace(tzinfo=timezone.utc)
             
         harvest_time = planted_at + timedelta(seconds=self.growth_time)
 
