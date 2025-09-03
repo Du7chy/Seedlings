@@ -13,7 +13,7 @@ class User(db.Model, UserMixin):
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4())) # Generate a unique user ID
     username = db.Column(db.String(24), unique=True, nullable=False) 
     email = db.Column(db.String(120), unique=True, nullable=False)
-    password_hash = db.Column(db.String(128))
+    password_hash = db.Column(db.String(1024))
     date_registered = db.Column(db.DateTime, default=datetime.now(pytz.timezone('Australia/Sydney'))) # Save time of registration relative to Sydney's timezone
     currency = db.Column(db.Integer, default=100) # Set default currency to 100
     room_id = db.Column(db.Integer, db.ForeignKey('room.id', ondelete='SET NULL'), nullable=True)
