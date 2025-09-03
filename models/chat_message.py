@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 class ChatMessage(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     message_content = db.Column(db.String(500), nullable=False)
-    timestamp = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+    timestamp = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
     room_id = db.Column(db.Integer, db.ForeignKey('room.id', ondelete='CASCADE'), nullable=False)
     user_id = db.Column(db.String(36), db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
 
