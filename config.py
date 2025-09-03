@@ -1,5 +1,6 @@
 import os
 from datetime import timedelta
+from sqlalchemy.pool import NullPool
 
 class Config:
     """Base configuration settings"""
@@ -40,7 +41,9 @@ class ProductionConfig(Config):
 
     DEBUG = False
     SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL") # Get db URL for Render
-
+    SQLALCHEMY_ENGINE_OPTIONS = {
+        "poolclass":NullPool
+    }
     CORS_ORIGINS = ['seedlings-5fgm.onrender.com']
 
 # Dictionary of configurations
