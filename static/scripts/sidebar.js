@@ -46,7 +46,7 @@ const initChat = () => {
         msgDiv.innerHTML = `
             <span class="chat-user">${data.user}:</span>
             <span class="chat-content">${data.message_content}</span>
-            <span class="chat-timestamp">${new Date(data.timestamp).toLocaleString('en-AU', { timeZone: 'Australia/Sydney' })}</span>
+            <span class="chat-timestamp">${new Date(data.timestamp).toLocaleString()}</span>
         `; // Display chat message in User's local time
         chatMessages.appendChild(msgDiv);
         chatMessages.scrollTop = chatMessages.scrollHeight;

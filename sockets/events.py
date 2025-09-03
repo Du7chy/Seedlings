@@ -1,6 +1,5 @@
 from flask_socketio import emit, join_room as socket_join_room, leave_room as socket_leave_room
 from flask_login import current_user
-from flask import request
 from models.database import db
 from models.room import Room
 from models.chat_message import ChatMessage
