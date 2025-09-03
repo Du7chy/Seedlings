@@ -8,5 +8,6 @@ werkzeug
 python-dotenv
 pytz
 gunicorn
+eventlet
 
 # .\.venv\Scripts\pip install -r requirements.txt
