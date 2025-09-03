@@ -39,12 +39,9 @@ class ProductionConfig(Config):
     """Production configuration settings"""
 
     DEBUG = False
-    # Will be replaced later for PythonAnywhere database configuration
-    SQLALCHEMY_DATABASE_URI = 'PLACEHOLDER'
+    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL") # Get db URL for Render
 
-    CORS_ORIGINS = [
-        'PLACEHOLDER'
-    ]
+    CORS_ORIGINS = ['seedlings-5fgm.onrender.com']
 
 # Dictionary of configurations
 config = {
@@ -52,4 +49,3 @@ config = {
     'production': ProductionConfig,
     'default': DevelopmentConfig
 }
-
